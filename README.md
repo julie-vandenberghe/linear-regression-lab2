@@ -8,13 +8,13 @@ promo: "M1 Cyber"
 # Analyse du modèle de régression linéaire car_price_prediction_oop_tk.ipynb
 
 
-## Problématique
+## 0. Problématique
 
 On veut prédire le prix de vente (Selling_Price) d’une voiture d’occasion à partir d’attributs comme : le modèle, l’année, le prix présent, les kilomètres parcourus, le type de carburant, type de vendeur, transmission, etc.
 
 C’est un problème de régression : la variable cible est numérique continue (prix).
 
-## Librairies utilisées
+## 1. Librairies importées
 
 ### Visualisation et manipulation des données
 
@@ -35,7 +35,9 @@ C’est un problème de régression : la variable cible est numérique continue 
 - `sklearn.model_selection` pour la validation croisée
 - `sklearn.metrics` pour l'évaluation des modèles
 
-## Informations sur le CSV
+## 2. Chargement, copie et nettoyage des données
+
+### Informations sur le CSV
 
 Le CSV comporte 301 lignes et 9 colonnes.
 
@@ -51,12 +53,11 @@ Le CSV comporte 301 lignes et 9 colonnes.
 - Transmission
 - Owner
 
-
 ### Pré-traitement des données
 
 `df.drop(['Car_Name'], axis=1, inplace=True)` est utilisé pour supprimer la colonne 'Car_Name' du DataFrame, car elle n'est pas nécessaire pour l'analyse.
 
-### Type de Données
+### Types de données
 
 - Year : Entier
 - Selling_Price : Flottant
@@ -67,9 +68,9 @@ Le CSV comporte 301 lignes et 9 colonnes.
 - Transmission : Objet (chaîne de caractères)
 - Owner : Entier
 
-Il y a donc 2 colonnes avec des Floats, 3 colonnes avec des Entiers et 3 colonnes avec des Objets (chaînes de caractères).
+Il y a donc 2 colonnes avec des floats, 3 colonnes avec des entiers et 3 colonnes avec des objets (chaînes de caractères).
 
-### Nettoyage des Données
+### Nettoyage des données
 
 `df.isna().sum()` est utilisé pour vérifier la présence de valeurs manquantes dans chaque colonne du DataFrame. Si le résultat montre des zéros pour toutes les colonnes, cela signifie qu'il n'y a pas de valeurs manquantes dans le jeu de données.
 
@@ -81,7 +82,7 @@ Il y a donc 2 colonnes avec des Floats, 3 colonnes avec des Entiers et 3 colonne
 
 `df_num= df.select_dtypes(['int64','float64'])` est utilisé pour sélectionner toutes les colonnes du DataFrame qui sont de type entier (int64) ou flottant (float64) et les stocker dans un nouveau DataFrame appelé `df_num`. Cela permet de se concentrer sur l'analyse des variables numériques.
 
-### Visualisation des Données
+### Visualisation des données
 
 ```python
 
@@ -163,3 +164,32 @@ Ce code crée des graphiques de dispersion pour chaque colonne numérique dans l
 - Graphique 2 : Relation entre le prix de vente (Selling_Price) et les kilomètres parcourus (Kms_Driven)
 - Graphique 3 : Relation entre le prix de vente (Selling_Price) et le nombre de propriétaires précédents (Owner)
 - Graphique 4 : Relation entre le prix de vente (Selling_Price) et l'âge de la voiture
+
+## 3. Exploratory Data Analysis (EDA)
+
+### Séparation des colonnes numériques et catégorielles
+
+```python
+df2_num = df2.select_dtypes(['int64', 'float64'])
+df2_cat = df2.select_dtypes(['object'])
+```
+
+On fait ensuite un `describe()` sur les données catégorielles et numériques.
+Sur un DataFrame catégoriel (object), cela donne un résumé statistique (en termes de fréquence et de diversité) des colonnes catégorielles :
+- count → nombre de valeurs non nulles
+- unique → nombre de catégories distinctes
+- top → catégorie la plus fréquente
+- freq → fréquence de cette catégorie la plus fréquente
+
+`.T` transpose ensuite le résultat pour que les colonnes deviennent des lignes (plus lisible).
+
+On fait également un `describe()` sur les colonnes numériques (comme nous l'avions fait plus haut).
+
+### Analyse bivariée numérique
+
+L'analyse bivariée numérique est une analyse statistique ou graphique qui examine la relation entre deux variables numériques. 
+On génére tout d'abord des graphiques de dispersion afin de visualiser la relation entre chaque variable numérique et le prix de vente.
+
+[A COMPLÈTER]
+
+## 4. Modèle de régression linéaire
