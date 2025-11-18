@@ -1,0 +1,181 @@
+% Fichier: template.tex
+\documentclass[12pt, a4paper]{article}
+
+% --- Variables pour la page de titre ---
+$if(title)$
+\newcommand{\mytitle}{$title$}
+$else$
+\newcommand{\mytitle}{Titre du Document}
+$endif$
+
+$if(author)$
+\newcommand{\myauthor}{$author$}
+$else$
+\newcommand{\myauthor}{Auteur}
+$endif$
+
+$if(date)$
+\newcommand{\mydate}{$date$}
+$else$
+\newcommand{\mydate}{\today}
+$endif$
+
+$if(promo)$
+\newcommand{\mypromo}{$promo$}
+$else$
+\newcommand{\mypromo}{M1 Cyber}
+$endif$
+
+% --- Encodage et langue ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+
+% --- Préambule ---
+
+% Utilisation du package 'geometry' pour ajuster les marges
+\usepackage[a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
+
+% Utilisation du package 'fancyhdr' pour les en-têtes et pieds de page
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % Efface les réglages par défaut
+\renewcommand{\headrulewidth}{0.4pt} % Ligne sous l'en-tête
+\renewcommand{\footrulewidth}{0.4pt} % Ligne au-dessus du pied de page
+
+% Définition de l'en-tête et du pied de page
+\fancyhead[R]{\mytitle} % Titre du document à droite
+\fancyfoot[C]{\thepage} % Numéro de page au centre
+
+% Utilisation du package 'hyperref' pour les liens cliquables
+\usepackage[
+    colorlinks=true,
+    urlcolor=blue,
+    linkcolor=black
+]{hyperref}
+
+% Utilisation du package 'listings' pour une meilleure gestion du code
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Configuration de l'environnement de code (listings)
+\definecolor{codegray}{rgb}{0.38,0.38,0.38}
+\definecolor{codegreen}{rgb}{0.0,0.5,0.0}
+\definecolor{codeblue}{rgb}{0.0,0.0,1.0}
+\definecolor{codepurple}{rgb}{0.69,0.0,0.75}
+\definecolor{codestring}{rgb}{0.63,0.13,0.94}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
+\definecolor{keywordcolor}{rgb}{0.0,0.0,1.0}
+\definecolor{commentcolor}{rgb}{0.0,0.5,0.0}
+
+\lstset{
+    backgroundcolor=\color{backcolour}, % Couleur de fond
+    commentstyle=\color{commentcolor}\itshape, % Commentaires verts italiques
+    keywordstyle=\color{keywordcolor}\bfseries, % Mots-clés bleus en gras
+    numberstyle=\tiny\color{codegray}, % Style des numéros de ligne
+    stringstyle=\color{codestring}, % Chaînes de caractères violet
+    basicstyle=\ttfamily\footnotesize\color{codegray}, % Police de base
+    breaklines=true, % Saut de ligne
+    captionpos=b, % Position de la légende (bottom)
+    keepspaces=true, % Garder les espaces
+    numbers=none, % Numérotation des lignes (none: désactivé)
+    showspaces=false, % Afficher les espaces (false)
+    showtabs=false, % Afficher les tabulations (false)
+    frame=single, % Encadrer le code
+    rulecolor=\color{codegray},
+    tabsize=4, % Taille de la tabulation
+    language=Python, % Langage par défaut pour les blocs de code
+    columns=flexible,
+    showstringspaces=false,
+    emph={self,True,False,None}, % Mots spéciaux Python
+    emphstyle=\color{codeblue}\bfseries
+}
+
+% Rendre les en-têtes de section plus compacts
+\usepackage{titlesec}
+\titlespacing{\section}{0pt}{1.5ex}{1ex}
+\titlespacing{\subsection}{0pt}{1.2ex}{0.8ex}
+\titlespacing{\subsubsection}{0pt}{1ex}{0.6ex}
+
+
+
+% Définir la commande \passthrough pour Pandoc
+\providecommand{\passthrough}[1]{#1}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% Si vous utilisez une table des matières
+\setcounter{tocdepth}{2} % Jusqu'aux sous-sections
+
+% -----------------------------------------------------------------------
+
+% Correction pour les listes (réduire l'espace vertical)
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet}
+\setlist{nosep} % Réduit l'espace entre les éléments de liste
+
+% --- Packages pour la page de titre ---
+\usepackage{graphicx}
+\usepackage{float}
+
+
+% --- 9. Utilitaires divers et Hyperref ---
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\pandocbounded}[1]{#1}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+% Le reste du document est généré par Pandoc...
+
+% --- Début du document ---
+\begin{document}
+
+% Page de garde
+    \begin{titlepage}
+        \centering
+        
+        % Image EDN
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.7\linewidth]{media/EDN.jpg}
+            \label{fig:EDN}
+        \end{figure}
+        
+        \begin{center}
+            \HRule \\[0.4cm]
+            {\LARGE \bfseries \mytitle \\[0.4cm]}
+            \HRule \\[1cm]
+        \end{center}
+        
+        {\large \bfseries Rédigé par } \myauthor \\
+        {\large \bfseries Promo : } \mypromo \\
+        {\large \bfseries Date : } \mydate 
+        
+           
+        % Image du bas (catho)
+        \begin{figure}[b]
+            \centering
+            \includegraphics[width=0.3\linewidth]{media/catho.png}
+            \label{fig:catho}
+        \end{figure}
+       
+        \thispagestyle{empty}
+    \end{titlepage}
+
+\newpage
+
+% --- Table des matières ---
+$if(toc)$
+\thispagestyle{empty}
+\tableofcontents
+\clearpage
+$endif$
+
+% Redémarrer la numérotation des pages
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% --- Corps du document (généré par Pandoc) ---
+$body$
+
+\end{document}

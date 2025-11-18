@@ -1,7 +1,12 @@
+---
+title: "Analyse de Régression Linéaire sur les Prix de Voitures"
+author: "Satya Dejonge, Aurélie Dulymbois, Audrey Hertaux-Sene, Julie Vandenberghe, Clément Szewczyk"
+date: "Novembre 2025"
+promo: "M1 Cyber"
+---
+
 # Analyse du modèle de régression linéaire car_price_prediction_oop_tk.ipynb
 
-## Auteurs
-Audrey, Aurélie, Clément, Julie, Satya (M1 CYBER, 2025-2026)
 
 ## Problématique
 
@@ -34,7 +39,7 @@ C’est un problème de régression : la variable cible est numérique continue 
 
 Le CSV comporte 301 lignes et 9 colonnes.
 
-### Les différentes colonnes sont :
+**Les différentes colonnes sont :**
 
 - Car_Name
 - Year
