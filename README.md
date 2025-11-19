@@ -7,7 +7,6 @@ promo: "M1 Cyber"
 
 # Analyse du modèle de régression linéaire car_price_prediction_oop_tk.ipynb
 
-
 ## 0. Problématique
 
 On veut prédire le prix de vente (Selling_Price) d’une voiture d’occasion à partir d’attributs comme : le modèle, l’année, le prix présent, les kilomètres parcourus, le type de carburant, type de vendeur, transmission, etc.
@@ -105,6 +104,7 @@ Ce code crée des graphiques à barres pour chaque colonne catégorielle dans le
 ```python
 df_cat.Fuel_Type.value_counts().plot.barh()
 ```
+
 Ce code crée un graphique à barres horizontales pour la répartition des types de carburant (Fuel_Type) dans le DataFrame `df_cat`.
 
 ```python
@@ -113,6 +113,7 @@ ax.bar_label(ax.containers[0])
 plt.title("Fuel_Type Distribution", fontsize=14, fontweight='bold')
 plt.show()
 ```
+
 Ce code crée un graphique à barres horizontales pour la répartition des types de carburant (Fuel_Type) dans le DataFrame `df_cat`, en ajoutant des étiquettes aux barres pour indiquer le nombre d'occurrences de chaque catégorie.
 
 ```python
@@ -140,7 +141,7 @@ Ici, le résultat est `np.int64(2)`, ce qui indique qu'il y a 2 lignes dupliqué
 
 Les lignes dupliquées ont été supprimées en utilisant `df.drop_duplicates(inplace=True)`, ce qui modifie le DataFrame en place pour éliminer les doublons.
 
-``df = df.reset_index(drop=True)`` est utilisé pour réinitialiser les index du DataFrame après la suppression des lignes dupliquées. L'argument `drop=True` indique que l'ancien index ne doit pas être ajouté comme une colonne dans le DataFrame.
+`df = df.reset_index(drop=True)` est utilisé pour réinitialiser les index du DataFrame après la suppression des lignes dupliquées. L'argument `drop=True` indique que l'ancien index ne doit pas être ajouté comme une colonne dans le DataFrame.
 
 ```python
 df2 = df.copy()
@@ -176,6 +177,7 @@ df2_cat = df2.select_dtypes(['object'])
 
 On fait ensuite un `describe()` sur les données catégorielles et numériques.
 Sur un DataFrame catégoriel (object), cela donne un résumé statistique (en termes de fréquence et de diversité) des colonnes catégorielles :
+
 - count → nombre de valeurs non nulles
 - unique → nombre de catégories distinctes
 - top → catégorie la plus fréquente
@@ -187,7 +189,7 @@ On fait également un `describe()` sur les colonnes numériques (comme nous l'av
 
 ### Analyse bivariée numérique
 
-L'analyse bivariée numérique est une analyse statistique ou graphique qui examine la relation entre deux variables numériques. 
+L'analyse bivariée numérique est une analyse statistique ou graphique qui examine la relation entre deux variables numériques.
 On génére tout d'abord des graphiques de dispersion afin de visualiser la relation entre chaque variable numérique et le prix de vente.
 
 -> A COMPLÈTER - JULIE
@@ -203,3 +205,180 @@ On génére tout d'abord des graphiques de dispersion afin de visualiser la rela
 ## 6. Visualisation du modèle final
 
 ## 7. Prédictions de données simples
+
+### Sélection du modèle optimal
+
+Après comparaison des quatre modèles développés (model1, model2, model3, model4), le **model4** a été retenu car il présente les meilleures performances avec un **coefficient de détermination R² = 0.97**. Ce score signifie que le modèle explique 97% de la variance des prix de voitures, ne laissant que 3% de variabilité inexpliquée.
+
+### Système de prédiction interactif
+
+1. **Saisie des données** : L'utilisateur peut entrer les caractéristiques d'une voiture :
+
+   - Prix actuel (Present_Price) en lakhs
+   - Âge de la voiture en années
+   - Kilométrage parcouru (Kms_Driven)
+   - Type de vendeur : Dealer (2) ou Individual (3)
+   - Type de carburant : Diesel (2), Petrol (3), CNG (4)
+   - Type de transmission : Automatic (2) ou Manual (3)
+   - Nombre de propriétaires précédents
+
+2. **Prétraitement automatique** : Le système applique automatiquement :
+
+   - L'encodage des variables catégorielles
+   - La normalisation des variables numériques (MinMaxScaler)
+   - Le feature engineering (log transformations, interactions)
+   - La création des nouvelles features : `log_Age`, `log_Kms_Driven`, `p_price_log_age`, `p_price_fuel`
+
+### Implémentation technique détaillée
+
+#### 1. Préparation des données initiales
+
+```python
+x = df4.drop('Selling_Price', axis=1)
+```
+
+- Creer le dataframe, supprime la coline selling price
+
+```python
+y = df4.Selling_Price.values.reshape(-1,1)
+```
+
+- Créer la variable cible transforme en matrice
+
+#### 2. Configuration de l'interface utilisateur
+
+```python
+cols_name = ['Present_Price','Age','Kms_Driven','Seller_Type','Fuel_Type','Transmission','Owner']
+```
+
+- Définir la liste des caractéristiques à saisir par l'utilisateur
+
+#### 3. Saisie interactive des données
+
+```python
+sample = pd.DataFrame()
+```
+
+- Créer un DataFrame vide pour stocker la nouvelle observation
+
+```python
+for col in cols_name:
+    sample[col] = [float(input(f"{col}: "))]
+```
+
+- Met les valeurs que l'utilisateur à entrer pour chaque caracterique
+
+#### 4. Intégration et Feature Engineering
+
+```python
+x = pd.concat([x,sample])
+```
+
+- Ajoute la nouvelle observation aux données existantes, --> concat = empiler les lignes
+
+```python
+x['log_Age'] = np.log10(x['Age'])
+```
+
+- Créer une nouvelle colonne avec la transformation logarithmique de l'âge
+
+```python
+x['log_Kms_Driven'] = np.log10(x['Kms_Driven'])
+```
+
+- Transformation logarithmique du kilométrage
+- log pcq : Réduit l'asymétrie et améliore la linéarité
+
+```python
+x['p_price_log_age'] = x['Present_Price'] * x['log_Age']
+```
+
+- Comment prix et âge interagissent ensemble
+
+```python
+x = x.drop(['Age', 'Kms_Driven'], axis=1)
+```
+
+- Supprime les variables originales (Age, Kms_Driven) pcq on utilise leurs versions logarithmiques
+- Évite la redondance
+
+#### 5. Division des données
+
+```python
+x_train = x[:len(x)-1]
+```
+
+- Créer les données d'entraînement
+
+```python
+x_test = x[len(x)-1:]
+```
+
+- Créer les données de test
+
+```python
+y_train = y
+```
+
+- Variables cibles pour l'entraînement
+
+#### 6. Entraînement du modèle
+
+```python
+final_model = LinearRegression()
+```
+
+- Créer une instance de régression linéaire vierge
+
+```python
+final_model.fit(x_train, y_train)
+```
+
+- Entraîner le modèle sur les données
+
+#### 7. Analyse des coefficients
+
+```python
+final_params = ['b']+ ['w_' + str(i) for i in range(1,x.shape[1]+1)]
+```
+
+- Créer les noms des paramètres
+
+```python
+param_name = ['intercept'] + x.columns.to_list()
+```
+
+- Créer la liste des noms de colonnes
+
+```python
+final_weight_table = pd.DataFrame({'final_params': final_params, 'Columns': param_name})
+```
+
+- Créer un DataFrame pour le tableau des coefficients
+
+```python
+sk_weight = [i for i in final_model.intercept_] + final_model.coef_.tolist()[0]
+```
+
+- Extraire tous les coefficients du modèle
+
+```python
+final_weight_table = final_weight_table.join(pd.Series(sk_weight, name='Sk_weight'))
+```
+
+- Ajouter les valeurs des coefficients au tableau
+- pd.Series() : Crée une série avec les poids
+
+#### 8. Prédiction finale
+
+```python
+y_pred = final_model.predict(x_test)
+```
+
+- Prédire le prix de la nouvelle voiture
+
+### Avantages de l'approche
+
+1. **Robustesse du modèle**
+2. **Facilité d'utilisation**
+3. **Transparence et traçabilité**
