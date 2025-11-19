@@ -167,10 +167,12 @@ Ce code crée des graphiques de dispersion pour chaque colonne numérique dans l
 
 ## 3. Exploratory Data Analysis (EDA)
 
-L’EDA sert à comprendre les données avant de créer un modèle. Elle se divise en 3 grandes sous-parties :
+L’EDA sert à comprendre les données avant de créer un modèle. Elle se divise en 5 grandes sous-parties :
 - Analyse univariée numérique → comprendre chaque variable numérique individuellement
 - Analyse bivariée numérique → comprendre la relation entre 2 variables numériques
-- Corrélations / Heatmap → comprendre les relations globales entre toutes les variables
+- Analyse bivariée catégorielle / numérique → comprendre la relation entre une variable numérique et une variable catégorielle
+- Analyse bivariée catégorielle
+- Analyse 
 
 ### Séparation des colonnes numériques et catégorielles
 
@@ -200,15 +202,76 @@ L'analyse bivariée numérique est une analyse statistique ou graphique qui exam
 Dans notre exemple, on génére des graphiques de dispersion (scatter plots) afin de visualiser la relation entre chaque variable numérique et le prix de vente.
 On voit ainsi que plus une voiture a roulé, moins elle vaut. Et plus la voiture était chère neuve, plus elle est chère d’occasion.
 
-
 #### Scatter plot détaillé pour Kms_Driven
 On fait ensuite un scatter plot détaillé pour Kms_Driven en dessous de 100000 kms car certaines voitures ont peut-être 300 000 ou même 600 000 km et ces valeurs sont beaucoup trop grandes et écrasent totalement l’échelle.
 
 #### Heatmap de corrélation
 Le but est ici de voir quelles variables numériques sont corrélées entre elles.
-On voit ainsi que Present_Price corrèle fortement avec Selling_Price. Et que Age corrèle négativement avec Selling_Price.
+On voit ainsi que Present_Price a une corrélation forte avec Selling_Price. Et que Age corrèle (négativement) avec Selling_Price.
 
--> A COMPLÈTER - JULIE
+### Analyse bivariée catégorielle / numérique
+Dans cette partie, on étudie la relation entre une variable numérique et une variable catégorielle car les catégories peuvent influencer les valeurs numériques.
+L'outil utilisé est le boxplot, qui montre :
+- la médiane
+- l’étendue
+- les outliers
+- les différences entre groupes
+
+On voit ainsi que : 
+- si Fuel_Type est Diesel, la voiture aura un prix de vente plus élevés que Petrol ;
+- les revendeurs pratiquent des prix plus hauts que les particuliers ;
+- les voitures automatiques sont plus chères que les manuelles.
+
+### Analyse bivariée catégorielle
+```python
+df3 = df2.copy()
+df3['Transmission_rate'] = np.where(df3.Transmission == 'Automatic', 1, 0)
+df3.Transmission_rate.value_counts()
+```
+On crée une copie de df2 pour travailler dessus sans modifier df2. Puis, on transforme la variable Transmission en variable numérique binaire afin de pouvoir exploiter la donnée.
+On remplace ainsi 
+- Automatic → 1
+- Manual → 0
+
+On fait la même chose avec Seller_Type : 
+- Dealer → 1
+- Individual → 0
+
+```python
+%matplotlib inline
+df3.groupby('Fuel_Type')['Transmission_rate'].mean().plot.bar()
+plt.title('Fuel_Type vs Transmission_rate', fontsize=16, fontweight='bold')
+plt.ylabel('Transmission_rate')
+plt.xticks(rotation=0)
+plt.show()
+```
+On affiche ensuite un barplot (diagramme à bâtons) qui compare le Fuel_Type et le Transmission_rate.
+→ Les voitures Diesel sont plus souvent automatiques que les voitures essence.
+On affiche aussi un barplot qui compare le Fuel_Type et le Seller_Type.
+→ Les voitures essence sont les moins vendus par les revendeurs.
+Et même chose pour la Transmission et le Seller_Type.
+→ Les voitures automatiques sont les plus vendus par les revendeurs.
+
+### Analyse multivariée
+```python
+result = pd.pivot_table(data=df3, index='Fuel_Type', columns='Seller_Type', values='Transmission_rate')
+```
+Tout d'abord, on fait un tableau croisé entre 2 variables catégorielles, avec une valeur numérique.
+
+```python
+sns.heatmap(result, annot=True, cmap='RdYlGn', center=0.117)
+plt.title('Heatmap of categorical data', fontsize=16, fontweight='bold')
+plt.show()
+```
+À partir de ça, on génère la heatmap (carte de chaleur). 
+Les options ajoutées : 
+- annot=True → nombre visible dans les cases
+- cmap='RdYlGn' → rouge/jaune/vert (faible → moyen → fort)
+- center=0.117 → point central de la palette (pour équilibrer les couleurs)
+
+Cette heatmap montre que les particuliers ont le plus souvent des voitures Diesel par exemple.
+
+[A compléter]
 
 ## 4. Modèle de régression linéaire
 
