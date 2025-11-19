@@ -7,6 +7,7 @@ promo: "M1 Cyber"
 
 # Analyse du modèle de régression linéaire car_price_prediction_oop_tk.ipynb
 
+
 ## 0. Problématique
 
 On veut prédire le prix de vente (Selling_Price) d’une voiture d’occasion à partir d’attributs comme : le modèle, l’année, le prix présent, les kilomètres parcourus, le type de carburant, type de vendeur, transmission, etc.
@@ -104,7 +105,6 @@ Ce code crée des graphiques à barres pour chaque colonne catégorielle dans le
 ```python
 df_cat.Fuel_Type.value_counts().plot.barh()
 ```
-
 Ce code crée un graphique à barres horizontales pour la répartition des types de carburant (Fuel_Type) dans le DataFrame `df_cat`.
 
 ```python
@@ -113,7 +113,6 @@ ax.bar_label(ax.containers[0])
 plt.title("Fuel_Type Distribution", fontsize=14, fontweight='bold')
 plt.show()
 ```
-
 Ce code crée un graphique à barres horizontales pour la répartition des types de carburant (Fuel_Type) dans le DataFrame `df_cat`, en ajoutant des étiquettes aux barres pour indiquer le nombre d'occurrences de chaque catégorie.
 
 ```python
@@ -141,7 +140,7 @@ Ici, le résultat est `np.int64(2)`, ce qui indique qu'il y a 2 lignes dupliqué
 
 Les lignes dupliquées ont été supprimées en utilisant `df.drop_duplicates(inplace=True)`, ce qui modifie le DataFrame en place pour éliminer les doublons.
 
-`df = df.reset_index(drop=True)` est utilisé pour réinitialiser les index du DataFrame après la suppression des lignes dupliquées. L'argument `drop=True` indique que l'ancien index ne doit pas être ajouté comme une colonne dans le DataFrame.
+``df = df.reset_index(drop=True)`` est utilisé pour réinitialiser les index du DataFrame après la suppression des lignes dupliquées. L'argument `drop=True` indique que l'ancien index ne doit pas être ajouté comme une colonne dans le DataFrame.
 
 ```python
 df2 = df.copy()
@@ -185,7 +184,6 @@ df2_cat = df2.select_dtypes(['object'])
 
 On fait ensuite un `describe()` sur les données catégorielles et numériques.
 Sur un DataFrame catégoriel (object), cela donne un résumé statistique (en termes de fréquence et de diversité) des colonnes catégorielles :
-
 - count → nombre de valeurs non nulles
 - unique → nombre de catégories distinctes
 - top → catégorie la plus fréquente
@@ -197,7 +195,7 @@ On fait également un `describe()` sur les colonnes numériques (comme nous l'av
 
 ### Analyse bivariée numérique
 
-L'analyse bivariée numérique est une analyse statistique ou graphique qui examine la relation entre deux variables numériques.
+L'analyse bivariée numérique est une analyse statistique ou graphique qui examine la relation entre deux variables numériques. 
 On génére tout d'abord des graphiques de dispersion afin de visualiser la relation entre chaque variable numérique et le prix de vente.
 
 #### Scatter plots sur toutes les variables numériques
@@ -601,62 +599,3 @@ y_pred = final_model.predict(x_test)
 1. **Robustesse du modèle**
 2. **Facilité d'utilisation**
 3. **Transparence et traçabilité**
-
-### Coefficients du Modèle
-
-L'interprétation du modèle repose sur l'examen des coefficients ($w_i$), qui mesurent l'impact marginal de chaque variable sur le `Selling_Price`.
-
-Le code suivant a été utilisé pour afficher les poids finaux :
-
-```python
-print("Table of coef and intercept of model:\n")
-final_params = ['b']+ ['w_' + str(i) for i in range(1,x.shape[1]+1)]
-param_name = ['intercept'] + x.columns.to_list()
-final_weight_table = pd.DataFrame({'final_params': final_params, 'Columns': param_name})
-sk_weight = [final_model.intercept_] + final_model.coef_.tolist()
-final_weight_table = final_weight_table.join(pd.Series(sk_weight, name='Sk weight'))
-print(final_weight_table, '\n')
-```
-
-| `final_params` | `Columns` (Variable)  | `Sk weight` (Coefficient) |
-| :------------: | :-------------------- | :-----------------------: |
-|     **b**      | intercept             |      $\approx 2.454$      |
-|      w_1       | `Present_Price`       |      $\approx 0.442$      |
-|      w_5       | `Fuel_Type_Diesel`    |      $\approx 2.503$      |
-|      w_8       | `Transmission_Manual` |     $\approx -1.334$      |
-|      w_4       | `Age`                 |     $\approx -0.420$      |
-
-- **Conclusion :** Le **`Present_Price`** est le prédicteur le plus fort. Le **`Fuel_Type_Diesel`** ajoute une valeur significative, tandis que l'**`Age`** et la **`Transmission_Manual`** sont associés à une dévaluation.
-
-### Performance Graphique
-
-La performance est illustrée en comparant les prix prédits aux prix réels sur l'ensemble de test.
-
-## 7. Prédictions de données simples
-
-Le modèle final est utilisé pour prédire le prix de vente d'une observation spécifique issue de l'ensemble de test.
-
-### Résultat de la Prédiction
-
-```python
-y_pred = final_model.predict(x_test)
-print('='*25)
-print(f"  Selling Price (Actual): {y[len(y)-1]}")
-print(f"  Selling Price (Predict): {y_pred[0]}")
-print('='*25)
-```
-
-**Valeurs obtenues :**
-
-```text
-=========================
-  Selling Price (Actual): 12.5
-  Selling Price (Predict): 10.4566
-=========================
-```
-
-- Le modèle a sous-estimé le prix réel (**12.5 Lakhs**) à **10.46 Lakhs**, illustrant la marge d'erreur du modèle sur un cas isolé.
-
-### Application
-
-Le modèle peut être appliqué à de nouvelles données pour estimer leur prix après application des étapes de pré-traitement nécessaires (encodage et mise à l'échelle).
