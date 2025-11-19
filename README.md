@@ -193,3 +193,9 @@ On génére tout d'abord des graphiques de dispersion afin de visualiser la rela
 [A COMPLÈTER]
 
 ## 4. Modèle de régression linéaire
+
+## 5. Amélioration du modèle
+
+## 6. Visualisation du modèle final
+
+## 7. Prédictions de données simples
