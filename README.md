@@ -7,7 +7,6 @@ promo: "M1 Cyber"
 
 # Analyse du modèle de régression linéaire car_price_prediction_oop_tk.ipynb
 
-
 ## 0. Problématique
 
 On veut prédire le prix de vente (Selling_Price) d’une voiture d’occasion à partir d’attributs comme : le modèle, l’année, le prix présent, les kilomètres parcourus, le type de carburant, type de vendeur, transmission, etc.
@@ -105,6 +104,7 @@ Ce code crée des graphiques à barres pour chaque colonne catégorielle dans le
 ```python
 df_cat.Fuel_Type.value_counts().plot.barh()
 ```
+
 Ce code crée un graphique à barres horizontales pour la répartition des types de carburant (Fuel_Type) dans le DataFrame `df_cat`.
 
 ```python
@@ -113,6 +113,7 @@ ax.bar_label(ax.containers[0])
 plt.title("Fuel_Type Distribution", fontsize=14, fontweight='bold')
 plt.show()
 ```
+
 Ce code crée un graphique à barres horizontales pour la répartition des types de carburant (Fuel_Type) dans le DataFrame `df_cat`, en ajoutant des étiquettes aux barres pour indiquer le nombre d'occurrences de chaque catégorie.
 
 ```python
@@ -140,7 +141,7 @@ Ici, le résultat est `np.int64(2)`, ce qui indique qu'il y a 2 lignes dupliqué
 
 Les lignes dupliquées ont été supprimées en utilisant `df.drop_duplicates(inplace=True)`, ce qui modifie le DataFrame en place pour éliminer les doublons.
 
-``df = df.reset_index(drop=True)`` est utilisé pour réinitialiser les index du DataFrame après la suppression des lignes dupliquées. L'argument `drop=True` indique que l'ancien index ne doit pas être ajouté comme une colonne dans le DataFrame.
+`df = df.reset_index(drop=True)` est utilisé pour réinitialiser les index du DataFrame après la suppression des lignes dupliquées. L'argument `drop=True` indique que l'ancien index ne doit pas être ajouté comme une colonne dans le DataFrame.
 
 ```python
 df2 = df.copy()
@@ -168,6 +169,7 @@ Ce code crée des graphiques de dispersion pour chaque colonne numérique dans l
 ## 3. Exploratory Data Analysis (EDA)
 
 L’EDA sert à comprendre les données avant de créer un modèle. Elle se divise en 3 grandes sous-parties :
+
 - Analyse univariée numérique → comprendre chaque variable numérique individuellement
 - Analyse bivariée numérique → comprendre la relation entre 2 variables numériques
 - Corrélations / Heatmap → comprendre les relations globales entre toutes les variables
@@ -183,6 +185,7 @@ df2_cat = df2.select_dtypes(['object'])
 
 On fait ensuite un `describe()` sur les données catégorielles et numériques.
 Sur un DataFrame catégoriel (object), cela donne un résumé statistique (en termes de fréquence et de diversité) des colonnes catégorielles :
+
 - count → nombre de valeurs non nulles
 - unique → nombre de catégories distinctes
 - top → catégorie la plus fréquente
@@ -195,16 +198,19 @@ On fait également un `describe()` sur les colonnes numériques (comme nous l'av
 ### Analyse bivariée numérique
 
 L'analyse bivariée numérique est une analyse statistique ou graphique qui examine la relation entre deux variables numériques.
+On génére tout d'abord des graphiques de dispersion afin de visualiser la relation entre chaque variable numérique et le prix de vente.
 
 #### Scatter plots sur toutes les variables numériques
+
 Dans notre exemple, on génére des graphiques de dispersion (scatter plots) afin de visualiser la relation entre chaque variable numérique et le prix de vente.
 On voit ainsi que plus une voiture a roulé, moins elle vaut. Et plus la voiture était chère neuve, plus elle est chère d’occasion.
 
-
 #### Scatter plot détaillé pour Kms_Driven
+
 On fait ensuite un scatter plot détaillé pour Kms_Driven en dessous de 100000 kms car certaines voitures ont peut-être 300 000 ou même 600 000 km et ces valeurs sont beaucoup trop grandes et écrasent totalement l’échelle.
 
 #### Heatmap de corrélation
+
 Le but est ici de voir quelles variables numériques sont corrélées entre elles.
 On voit ainsi que Present_Price corrèle fortement avec Selling_Price. Et que Age corrèle négativement avec Selling_Price.
 
@@ -215,6 +221,7 @@ On voit ainsi que Present_Price corrèle fortement avec Selling_Price. Et que Ag
 ```python
 df4
 ```
+
 Permet d'afficher le DataFrame final `df4` qui contient les données prêtes pour la modélisation.
 
 Il contient 299 lignes et 8 colonnes :
@@ -365,7 +372,7 @@ Ce code définit une classe `CarPredModel` qui encapsule le processus de créati
 
 La fonction `__init__` initialise la classe avec les caractéristiques (x), la cible (y) et la taille du test.
 
-La fonction `fit_model` divise les données en ensembles d'entraînement et de test, ajuste le modèle de régression linéaire, et calcule les scores R2 et MAE pour les ensembles d'entraînement et de test.\ 
+La fonction `fit_model` divise les données en ensembles d'entraînement et de test, ajuste le modèle de régression linéaire, et calcule les scores R2 et MAE pour les ensembles d'entraînement et de test.\
 La fonction utilise la méthode `train_test_split` de `sklearn.model_selection` pour diviser les données. Ensuite elle instantie un modèle de régression linéaire à l'aide de `LinearRegression` de `sklearn.linear_model`, ajuste le modèle avec les données d'entraînement, et prédit les valeurs pour les ensembles d'entraînement et de test. Enfin, elle calcule les scores R2, MAE et MSE en utilisant les fonctions de `sklearn.metrics`.
 
 - score R2 (coefficient de détermination) : mesure la proportion de la variance dans la variable dépendante qui est prévisible à partir des variables indépendantes.
@@ -376,10 +383,9 @@ La fonction `cross` effectue une validation croisée k-fold pour évaluer la per
 
 La fonction `plot_graph` crée des graphiques pour visualiser les résidus, la relation entre les valeurs réelles et prédites, et les erreurs absolues moyennes.
 
-La fonction `append_result` stocke les scores R2, MAE et CV dans des listes pour une analyse ultérieure. 
+La fonction `append_result` stocke les scores R2, MAE et CV dans des listes pour une analyse ultérieure.
 
 La fonction `show_weight` crée un tableau des coefficients et de l'interception du modèle de régression linéaire.
-
 
 Par la suite, on prépare les données pour le modèle :
 
@@ -388,6 +394,7 @@ norm1 = norm.copy()
 x = norm1.drop('Selling_Price', axis='columns')
 y = norm1.Selling_Price.values.reshape(-1,1)
 ```
+
 Ce code crée une copie du DataFrame `norm` appelée `norm1`, puis sépare les caractéristiques (x) en supprimant la colonne 'Selling_Price' et stocke la variable cible (y) en extrayant la colonne 'Selling_Price' et en la remodelant en un tableau 2D.
 
 Enfin, on crée une instance de la classe `CarPredModel`, on ajuste le modèle et on effectue une validation croisée :
@@ -416,61 +423,181 @@ Ce code appelle la méthode `append_result()` pour stocker les résultats du mod
 
 ## 6. Visualisation du modèle final
 
-### Coefficients du Modèle
-
-L'interprétation du modèle repose sur l'examen des coefficients ($w_i$), qui mesurent l'impact marginal de chaque variable sur le `Selling_Price`.
-
-Le code suivant a été utilisé pour afficher les poids finaux :
-
-```python
-print("Table of coef and intercept of model:\n")
-final_params = ['b']+ ['w_' + str(i) for i in range(1,x.shape[1]+1)]
-param_name = ['intercept'] + x.columns.to_list()
-final_weight_table = pd.DataFrame({'final_params': final_params, 'Columns': param_name})
-sk_weight = [final_model.intercept_] + final_model.coef_.tolist()
-final_weight_table = final_weight_table.join(pd.Series(sk_weight, name='Sk weight'))
-print(final_weight_table, '\n')
-```
-
-| `final_params` | `Columns` (Variable) | `Sk weight` (Coefficient) |
-| :---: | :--- | :---: |
-| **b** | intercept | $\approx 2.454$ |
-| w\_1 | `Present_Price` | $\approx 0.442$ |
-| w\_5 | `Fuel_Type_Diesel` | $\approx 2.503$ |
-| w\_8 | `Transmission_Manual` | $\approx -1.334$ |
-| w\_4 | `Age` | $\approx -0.420$ |
-
-  * **Conclusion :** Le **`Present_Price`** est le prédicteur le plus fort. Le **`Fuel_Type_Diesel`** ajoute une valeur significative, tandis que l'**`Age`** et la **`Transmission_Manual`** sont associés à une dévaluation.
-
-### Performance Graphique
-
-La performance est illustrée en comparant les prix prédits aux prix réels sur l'ensemble de test.
-
 ## 7. Prédictions de données simples
 
-Le modèle final est utilisé pour prédire le prix de vente d'une observation spécifique issue de l'ensemble de test.
+### Sélection du modèle optimal
 
-### Résultat de la Prédiction
+Après comparaison des quatre modèles développés (model1, model2, model3, model4), le **model4** a été retenu car il présente les meilleures performances avec un **coefficient de détermination R² = 0.97**. Ce score signifie que le modèle explique 97% de la variance des prix de voitures, ne laissant que 3% de variabilité inexpliquée.
+
+### Système de prédiction interactif
+
+1. **Saisie des données** : L'utilisateur peut entrer les caractéristiques d'une voiture :
+
+   - Prix actuel (Present_Price) en lakhs
+   - Âge de la voiture en années
+   - Kilométrage parcouru (Kms_Driven)
+   - Type de vendeur : Dealer (2) ou Individual (3)
+   - Type de carburant : Diesel (2), Petrol (3), CNG (4)
+   - Type de transmission : Automatic (2) ou Manual (3)
+   - Nombre de propriétaires précédents
+
+2. **Prétraitement automatique** : Le système applique automatiquement :
+
+   - L'encodage des variables catégorielles
+   - La normalisation des variables numériques (MinMaxScaler)
+   - Le feature engineering (log transformations, interactions)
+   - La création des nouvelles features : `log_Age`, `log_Kms_Driven`, `p_price_log_age`, `p_price_fuel`
+
+### Implémentation technique détaillée
+
+#### 1. Préparation des données initiales
+
+```python
+x = df4.drop('Selling_Price', axis=1)
+```
+
+- Creer le dataframe, supprime la coline selling price
+
+```python
+y = df4.Selling_Price.values.reshape(-1,1)
+```
+
+- Créer la variable cible transforme en matrice
+
+#### 2. Configuration de l'interface utilisateur
+
+```python
+cols_name = ['Present_Price','Age','Kms_Driven','Seller_Type','Fuel_Type','Transmission','Owner']
+```
+
+- Définir la liste des caractéristiques à saisir par l'utilisateur
+
+#### 3. Saisie interactive des données
+
+```python
+sample = pd.DataFrame()
+```
+
+- Créer un DataFrame vide pour stocker la nouvelle observation
+
+```python
+for col in cols_name:
+    sample[col] = [float(input(f"{col}: "))]
+```
+
+- Met les valeurs que l'utilisateur à entrer pour chaque caracterique
+
+#### 4. Intégration et Feature Engineering
+
+```python
+x = pd.concat([x,sample])
+```
+
+- Ajoute la nouvelle observation aux données existantes, --> concat = empiler les lignes
+
+```python
+x['log_Age'] = np.log10(x['Age'])
+```
+
+- Créer une nouvelle colonne avec la transformation logarithmique de l'âge
+
+```python
+x['log_Kms_Driven'] = np.log10(x['Kms_Driven'])
+```
+
+- Transformation logarithmique du kilométrage
+- log pcq : Réduit l'asymétrie et améliore la linéarité
+
+```python
+x['p_price_log_age'] = x['Present_Price'] * x['log_Age']
+```
+
+- Comment prix et âge interagissent ensemble
+
+```python
+x = x.drop(['Age', 'Kms_Driven'], axis=1)
+```
+
+- Supprime les variables originales (Age, Kms_Driven) pcq on utilise leurs versions logarithmiques
+- Évite la redondance
+
+#### 5. Division des données
+
+```python
+x_train = x[:len(x)-1]
+```
+
+- Créer les données d'entraînement
+
+```python
+x_test = x[len(x)-1:]
+```
+
+- Créer les données de test
+
+```python
+y_train = y
+```
+
+- Variables cibles pour l'entraînement
+
+#### 6. Entraînement du modèle
+
+```python
+final_model = LinearRegression()
+```
+
+- Créer une instance de régression linéaire vierge
+
+```python
+final_model.fit(x_train, y_train)
+```
+
+- Entraîner le modèle sur les données
+
+#### 7. Analyse des coefficients
+
+```python
+final_params = ['b']+ ['w_' + str(i) for i in range(1,x.shape[1]+1)]
+```
+
+- Créer les noms des paramètres
+
+```python
+param_name = ['intercept'] + x.columns.to_list()
+```
+
+- Créer la liste des noms de colonnes
+
+```python
+final_weight_table = pd.DataFrame({'final_params': final_params, 'Columns': param_name})
+```
+
+- Créer un DataFrame pour le tableau des coefficients
+
+```python
+sk_weight = [i for i in final_model.intercept_] + final_model.coef_.tolist()[0]
+```
+
+- Extraire tous les coefficients du modèle
+
+```python
+final_weight_table = final_weight_table.join(pd.Series(sk_weight, name='Sk_weight'))
+```
+
+- Ajouter les valeurs des coefficients au tableau
+- pd.Series() : Crée une série avec les poids
+
+#### 8. Prédiction finale
 
 ```python
 y_pred = final_model.predict(x_test)
-print('='*25)
-print(f"  Selling Price (Actual): {y[len(y)-1]}")
-print(f"  Selling Price (Predict): {y_pred[0]}")
-print('='*25)
 ```
 
-**Valeurs obtenues :**
+- Prédire le prix de la nouvelle voiture
 
-```text
-=========================
-  Selling Price (Actual): 12.5
-  Selling Price (Predict): 10.4566
-=========================
-```
+### Avantages de l'approche
 
-  * Le modèle a sous-estimé le prix réel (**12.5 Lakhs**) à **10.46 Lakhs**, illustrant la marge d'erreur du modèle sur un cas isolé.
-
-### Application
-
-Le modèle peut être appliqué à de nouvelles données pour estimer leur prix après application des étapes de pré-traitement nécessaires (encodage et mise à l'échelle).
+1. **Robustesse du modèle**
+2. **Facilité d'utilisation**
+3. **Transparence et traçabilité**
