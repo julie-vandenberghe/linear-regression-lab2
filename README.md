@@ -416,4 +416,61 @@ Ce code appelle la méthode `append_result()` pour stocker les résultats du mod
 
 ## 6. Visualisation du modèle final
 
+### Coefficients du Modèle
+
+L'interprétation du modèle repose sur l'examen des coefficients ($w_i$), qui mesurent l'impact marginal de chaque variable sur le `Selling_Price`.
+
+Le code suivant a été utilisé pour afficher les poids finaux :
+
+```python
+print("Table of coef and intercept of model:\n")
+final_params = ['b']+ ['w_' + str(i) for i in range(1,x.shape[1]+1)]
+param_name = ['intercept'] + x.columns.to_list()
+final_weight_table = pd.DataFrame({'final_params': final_params, 'Columns': param_name})
+sk_weight = [final_model.intercept_] + final_model.coef_.tolist()
+final_weight_table = final_weight_table.join(pd.Series(sk_weight, name='Sk weight'))
+print(final_weight_table, '\n')
+```
+
+| `final_params` | `Columns` (Variable) | `Sk weight` (Coefficient) |
+| :---: | :--- | :---: |
+| **b** | intercept | $\approx 2.454$ |
+| w\_1 | `Present_Price` | $\approx 0.442$ |
+| w\_5 | `Fuel_Type_Diesel` | $\approx 2.503$ |
+| w\_8 | `Transmission_Manual` | $\approx -1.334$ |
+| w\_4 | `Age` | $\approx -0.420$ |
+
+  * **Conclusion :** Le **`Present_Price`** est le prédicteur le plus fort. Le **`Fuel_Type_Diesel`** ajoute une valeur significative, tandis que l'**`Age`** et la **`Transmission_Manual`** sont associés à une dévaluation.
+
+### Performance Graphique
+
+La performance est illustrée en comparant les prix prédits aux prix réels sur l'ensemble de test.
+
 ## 7. Prédictions de données simples
+
+Le modèle final est utilisé pour prédire le prix de vente d'une observation spécifique issue de l'ensemble de test.
+
+### Résultat de la Prédiction
+
+```python
+y_pred = final_model.predict(x_test)
+print('='*25)
+print(f"  Selling Price (Actual): {y[len(y)-1]}")
+print(f"  Selling Price (Predict): {y_pred[0]}")
+print('='*25)
+```
+
+**Valeurs obtenues :**
+
+```text
+=========================
+  Selling Price (Actual): 12.5
+  Selling Price (Predict): 10.4566
+=========================
+```
+
+  * Le modèle a sous-estimé le prix réel (**12.5 Lakhs**) à **10.46 Lakhs**, illustrant la marge d'erreur du modèle sur un cas isolé.
+
+### Application
+
+Le modèle peut être appliqué à de nouvelles données pour estimer leur prix après application des étapes de pré-traitement nécessaires (encodage et mise à l'échelle).
