@@ -7,7 +7,6 @@ promo: "M1 Cyber"
 
 # Analyse du modèle de régression linéaire car_price_prediction_oop_tk.ipynb
 
-
 ## 0. Problématique
 
 On veut prédire le prix de vente (Selling_Price) d’une voiture d’occasion à partir d’attributs comme : le modèle, l’année, le prix présent, les kilomètres parcourus, le type de carburant, type de vendeur, transmission, etc.
@@ -105,6 +104,7 @@ Ce code crée des graphiques à barres pour chaque colonne catégorielle dans le
 ```python
 df_cat.Fuel_Type.value_counts().plot.barh()
 ```
+
 Ce code crée un graphique à barres horizontales pour la répartition des types de carburant (Fuel_Type) dans le DataFrame `df_cat`.
 
 ```python
@@ -113,6 +113,7 @@ ax.bar_label(ax.containers[0])
 plt.title("Fuel_Type Distribution", fontsize=14, fontweight='bold')
 plt.show()
 ```
+
 Ce code crée un graphique à barres horizontales pour la répartition des types de carburant (Fuel_Type) dans le DataFrame `df_cat`, en ajoutant des étiquettes aux barres pour indiquer le nombre d'occurrences de chaque catégorie.
 
 ```python
@@ -140,7 +141,7 @@ Ici, le résultat est `np.int64(2)`, ce qui indique qu'il y a 2 lignes dupliqué
 
 Les lignes dupliquées ont été supprimées en utilisant `df.drop_duplicates(inplace=True)`, ce qui modifie le DataFrame en place pour éliminer les doublons.
 
-``df = df.reset_index(drop=True)`` est utilisé pour réinitialiser les index du DataFrame après la suppression des lignes dupliquées. L'argument `drop=True` indique que l'ancien index ne doit pas être ajouté comme une colonne dans le DataFrame.
+`df = df.reset_index(drop=True)` est utilisé pour réinitialiser les index du DataFrame après la suppression des lignes dupliquées. L'argument `drop=True` indique que l'ancien index ne doit pas être ajouté comme une colonne dans le DataFrame.
 
 ```python
 df2 = df.copy()
@@ -184,6 +185,7 @@ df2_cat = df2.select_dtypes(['object'])
 
 On fait ensuite un `describe()` sur les données catégorielles et numériques.
 Sur un DataFrame catégoriel (object), cela donne un résumé statistique (en termes de fréquence et de diversité) des colonnes catégorielles :
+
 - count → nombre de valeurs non nulles
 - unique → nombre de catégories distinctes
 - top → catégorie la plus fréquente
@@ -195,7 +197,7 @@ On fait également un `describe()` sur les colonnes numériques (comme nous l'av
 
 ### Analyse bivariée numérique
 
-L'analyse bivariée numérique est une analyse statistique ou graphique qui examine la relation entre deux variables numériques. 
+L'analyse bivariée numérique est une analyse statistique ou graphique qui examine la relation entre deux variables numériques.
 On génére tout d'abord des graphiques de dispersion afin de visualiser la relation entre chaque variable numérique et le prix de vente.
 
 #### Scatter plots sur toutes les variables numériques
