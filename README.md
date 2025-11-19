@@ -473,9 +473,68 @@ model1.show_weight()
 
 Ce code appelle la méthode `append_result()` pour stocker les résultats du modèle, puis appelle la méthode `plot_graph()` pour visualiser les performances du modèle à l'aide de graphiques, et enfin appelle la méthode `show_weight()` pour afficher les coefficients et l'interception du modèle de régression linéaire.
 
-## 5. Amélioration du modèle
+## 5. Amélioration du modèle 
 
--> AURELIE
+### Transformation algorithmique  
+
+norm1['log_Age'] = np.log10(norm1.Age)
+norm1['log_Kms_Driven'] = np.log10(norm1.Kms_Driven)
+x = norm1.drop(['Selling_Price','Age','Kms_Driven'], axis='columns')
+y = norm1.Selling_Price.values.reshape(-1,1)
+
+Explication: 
+
+norm1['log_Age'] = np.log10(norm1.Age) // Ajoute une nouvelle colonne log_Age dans le DataFrame norm1 contenant le logarithme en base 10 de la colonne Age
+
+norm1['log_Kms_Driven'] = np.log10(norm1.Kms_Driven) //on transforme Kms_Driven avec log10 et on stocke dans log_Kms_Driven 
+
+x = norm1.drop(['Selling_Price','Age','Kms_Driven'], axis='columns') // Construit la matrice de caractéristiques x en supprimant la colonne cible Selling_Price et les colonnes brutes Age/Kms_Driven parce qu’on utilise leurs versions log transformées
+
+y = norm1.Selling_Price.values.reshape(-1,1)   //extrait la colonne cible Selling_Price sous forme de tableau
+
+
+Les variables d’âge et de kilométrage sont souvent fortement asymétriques : beaucoup de voitures ont peu de kilomètres et quelques voitures en ont énormément.
+Le logarithme permet donc de réduire l’effet des valeurs extrêmes et d’obtenir un modèle plus stable.
+
+model2 = CarPredModel(x,y,0.2) // Instancie un objet model2 de la classe CarPredModel
+model2.fit_model() //Appel à la méthode d’entraînement.
+model2.cross(5) // ppel à la validation croisée 
+
+### Ajout d’une variable d’interaction Present_Price × log_Age 
+
+norm1['p_price_log_age'] = norm1.Present_Price * norm1.log_Age 
+x = norm1.drop(['Selling_Price','Age','Kms_Driven'], axis='columns')
+y = norm1.Selling_Price.values.reshape(-1,1)
+model3 = CarPredModel(x,y, 0.2)
+model3.fit_model()
+model3.cross(5) 
+
+Explication:  
+
+norm1['p_price_log_age'] = norm1.Present_Price * norm1.log_Age //construit la matrice de caractéristiques x en supprimant la colonne cible Selling_Price et les colonnes brutes Age/Kms_Driven 
+
+L’idée est que l’impact du prix neuf n’est pas le même selon l’âge de la voiture :
+une voiture chère, perd plus de valeur avec l’âge et une voiture bon marché a une décote différente.
+Donc cette interaction capture la décote non linéaire liée au prix initial. 
+
+
+### Ajout d’une seconde interaction : Present_Price × Fuel_Type    
+
+Explication: 
+Le prix neuf d’un véhicule n’impacte pas la même manière selon le carburant :
+
+les diesels décotent plus vite dans certains contextes,les essences parfois moins,les CNG/other ont des comportements à part.
+Cette interaction permet donc de capturer un effet complexe prix × carburant. 
+
+
+### Test avec test_size = 0.3 (split 70/30) 
+On construit norm2 = norm.copy() puis on refait les mêmes étapes mais avec test_size = 0.3. 
+L'objectif est de vérifier la robustesse du modèle sur un autre split plus exigeant. 
+
+Le model1 correspond au modèle de base (sans log ni interactions) avec split 70/30.
+Le model2 ajoute la transformations log (même logique que pour norm1), puis entraînement et CV
+Le model3  ajoute l’interaction p_price_log_age.
+Le model4 ajoute la deuxième interaction, entraînement, CV.
 
 ## 6. Visualisation du modèle final
 
