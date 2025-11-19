@@ -190,11 +190,15 @@ On fait également un `describe()` sur les colonnes numériques (comme nous l'av
 L'analyse bivariée numérique est une analyse statistique ou graphique qui examine la relation entre deux variables numériques. 
 On génére tout d'abord des graphiques de dispersion afin de visualiser la relation entre chaque variable numérique et le prix de vente.
 
-[A COMPLÈTER]
+-> A COMPLÈTER - JULIE
 
 ## 4. Modèle de régression linéaire
 
+-> CLÉMENT
+
 ## 5. Amélioration du modèle
+
+-> AURELIE
 
 ## 6. Visualisation du modèle final
 
