@@ -38,6 +38,7 @@ $endif$
 
 % Utilisation du package 'fancyhdr' pour les en-têtes et pieds de page
 \usepackage{fancyhdr}
+\usepackage{lastpage} % Pour obtenir le nombre total de pages
 \pagestyle{fancy}
 \fancyhf{} % Efface les réglages par défaut
 \renewcommand{\headrulewidth}{0.4pt} % Ligne sous l'en-tête
@@ -45,7 +46,7 @@ $endif$
 
 % Définition de l'en-tête et du pied de page
 \fancyhead[R]{\mytitle} % Titre du document à droite
-\fancyfoot[C]{\thepage} % Numéro de page au centre
+\fancyfoot[C]{\thepage\ / \pageref{LastPage}} % Numéro de page / total de pages au centre
 
 % Utilisation du package 'hyperref' pour les liens cliquables
 \usepackage[
@@ -116,6 +117,10 @@ $endif$
 % --- Packages pour la page de titre ---
 \usepackage{graphicx}
 \usepackage{float}
+
+% --- Package pour les tableaux longs ---
+\usepackage{longtable}
+\usepackage{booktabs}
 
 
 % --- 9. Utilitaires divers et Hyperref ---
