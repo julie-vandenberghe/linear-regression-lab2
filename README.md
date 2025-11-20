@@ -1,22 +1,19 @@
 ---
-title: "Analyse de Régression Linéaire sur les Prix de Voitures"
-author: "Satya Dejonge, Aurélie Dulymbois, Audrey Hertaux-Sene, Julie Vandenberghe, Clément Szewczyk"
+title: "Analyse du modèle de régression linéaire car_price_prediction_oop_tk.ipynb"
+author: "Satya Dejonge, Aurélie Dulymbois, Audrey Heurtaux-Sene, Julie Vandenberghe, Clément Szewczyk"
 date: "Novembre 2025"
 promo: "M1 Cyber"
 ---
 
-# Analyse du modèle de régression linéaire car_price_prediction_oop_tk.ipynb
-
-
-## 0. Problématique
+# 0. Problématique
 
 On veut prédire le prix de vente (Selling_Price) d’une voiture d’occasion à partir d’attributs comme : le modèle, l’année, le prix présent, les kilomètres parcourus, le type de carburant, type de vendeur, transmission, etc.
 
 C’est un problème de régression : la variable cible est numérique continue (prix).
 
-## 1. Librairies importées
+# 1. Librairies importées
 
-### Visualisation et manipulation des données
+## Visualisation et manipulation des données
 
 - `Pandas` pour la manipulation des données
 - `NumPy` pour les opérations numériques
@@ -27,7 +24,7 @@ C’est un problème de régression : la variable cible est numérique continue 
 - `plotly.graph_objects` pour des graphiques personnalisés
 - `plt.style.use('_mpl-gallery')` pour définir le style des graphiques Matplotlib
 
-### Apprentissage automatique
+## Apprentissage automatique
 
 - `sklearn.model_selection` pour la division des données en ensembles d'entraînement et de test
 - `sklearn.preprocessing` pour la normalisation et le prétraitement des données
@@ -35,9 +32,9 @@ C’est un problème de régression : la variable cible est numérique continue 
 - `sklearn.model_selection` pour la validation croisée
 - `sklearn.metrics` pour l'évaluation des modèles
 
-## 2. Chargement, copie et nettoyage des données
+# 2. Chargement, copie et nettoyage des données
 
-### Informations sur le CSV
+## Informations sur le CSV
 
 Le CSV comporte 301 lignes et 9 colonnes.
 
@@ -53,11 +50,11 @@ Le CSV comporte 301 lignes et 9 colonnes.
 - Transmission
 - Owner
 
-### Pré-traitement des données
+## Pré-traitement des données
 
 `df.drop(['Car_Name'], axis=1, inplace=True)` est utilisé pour supprimer la colonne 'Car_Name' du DataFrame, car elle n'est pas nécessaire pour l'analyse.
 
-### Types de données
+## Types de données
 
 - Year : Entier
 - Selling_Price : Flottant
@@ -70,7 +67,7 @@ Le CSV comporte 301 lignes et 9 colonnes.
 
 Il y a donc 2 colonnes avec des floats, 3 colonnes avec des entiers et 3 colonnes avec des objets (chaînes de caractères).
 
-### Nettoyage des données
+## Nettoyage des données
 
 `df.isna().sum()` est utilisé pour vérifier la présence de valeurs manquantes dans chaque colonne du DataFrame. Si le résultat montre des zéros pour toutes les colonnes, cela signifie qu'il n'y a pas de valeurs manquantes dans le jeu de données.
 
@@ -82,7 +79,7 @@ Il y a donc 2 colonnes avec des floats, 3 colonnes avec des entiers et 3 colonne
 
 `df_num= df.select_dtypes(['int64','float64'])` est utilisé pour sélectionner toutes les colonnes du DataFrame qui sont de type entier (int64) ou flottant (float64) et les stocker dans un nouveau DataFrame appelé `df_num`. Cela permet de se concentrer sur l'analyse des variables numériques.
 
-### Visualisation des données
+## Visualisation des données
 
 ```python
 
@@ -165,26 +162,28 @@ Ce code crée des graphiques de dispersion pour chaque colonne numérique dans l
 - Graphique 3 : Relation entre le prix de vente (Selling_Price) et le nombre de propriétaires précédents (Owner)
 - Graphique 4 : Relation entre le prix de vente (Selling_Price) et l'âge de la voiture
 
-## 3. Exploratory Data Analysis (EDA)
+# 3. Exploratory Data Analysis (EDA)
 
 L’EDA sert à comprendre les données avant de créer un modèle. Elle se divise en 5 grandes sous-parties :
+
 - Analyse univariée numérique → comprendre chaque variable numérique individuellement
 - Analyse bivariée numérique → comprendre la relation entre 2 variables numériques
 - Analyse bivariée catégorielle / numérique → comprendre la relation entre une variable numérique et une variable catégorielle
 - Analyse bivariée catégorielle
 - Analyse multivariée
 
-### Séparation des colonnes numériques et catégorielles
+## Séparation des colonnes numériques et catégorielles
 
 ```python
 df2_num = df2.select_dtypes(['int64', 'float64'])
 df2_cat = df2.select_dtypes(['object'])
 ```
 
-### Analyse univariée numérique
+## Analyse univariée numérique
 
 On fait ensuite un `describe()` sur les données catégorielles et numériques.
 Sur un DataFrame catégoriel (object), cela donne un résumé statistique (en termes de fréquence et de diversité) des colonnes catégorielles :
+
 - count → nombre de valeurs non nulles
 - unique → nombre de catégories distinctes
 - top → catégorie la plus fréquente
@@ -194,35 +193,37 @@ Sur un DataFrame catégoriel (object), cela donne un résumé statistique (en te
 
 On fait également un `describe()` sur les colonnes numériques (comme nous l'avions fait plus haut).
 
-### Analyse bivariée numérique
+## Analyse bivariée numérique
 
 L'analyse bivariée numérique est une analyse statistique ou graphique qui examine la relation entre deux variables numériques.
 
-#### Scatter plots sur toutes les variables numériques
+### Scatter plots sur toutes les variables numériques
 Dans notre exemple, on génére des graphiques de dispersion (scatter plots) afin de visualiser la relation entre chaque variable numérique et le prix de vente.
 On voit ainsi que plus une voiture a roulé, moins elle vaut. Et plus la voiture était chère neuve, plus elle est chère d’occasion.
 
-#### Scatter plot détaillé pour Kms_Driven
+### Scatter plot détaillé pour Kms_Driven
 On fait ensuite un scatter plot détaillé pour Kms_Driven en dessous de 100 000 kms car certaines voitures ont peut-être 300 000 ou même 600 000 kms et ces valeurs sont beaucoup trop grandes et écrasent totalement l’échelle.
 
-#### Heatmap de corrélation
+### Heatmap de corrélation
 Le but est ici de voir quelles variables numériques sont corrélées entre elles.
 On voit ainsi que Present_Price a une corrélation forte avec Selling_Price. Et que Age corrèle (négativement) avec Selling_Price.
 
-### Analyse bivariée catégorielle / numérique
+## Analyse bivariée catégorielle / numérique
 Dans cette partie, on étudie la relation entre une variable numérique et une variable catégorielle car les catégories peuvent influencer les valeurs numériques.
 L'outil utilisé est le boxplot, qui montre :
+
 - la médiane
 - l’étendue
 - les outliers
 - les différences entre groupes
 
 On voit ainsi que : 
+
 - si Fuel_Type est Diesel, la voiture aura un prix de vente plus élevés que Petrol ;
 - les revendeurs pratiquent des prix plus hauts que les particuliers ;
 - les voitures automatiques sont plus chères que les manuelles.
 
-### Analyse bivariée catégorielle
+## Analyse bivariée catégorielle
 ```python
 df3 = df2.copy()
 df3['Transmission_rate'] = np.where(df3.Transmission == 'Automatic', 1, 0)
@@ -230,10 +231,12 @@ df3.Transmission_rate.value_counts()
 ```
 On crée une copie de df2 pour travailler dessus sans modifier df2. Puis, on transforme la variable Transmission en variable numérique binaire afin de pouvoir exploiter la donnée.
 On remplace ainsi 
+
 - Automatic → 1
 - Manual → 0
 
 On fait la même chose avec Seller_Type : 
+
 - Dealer → 1
 - Individual → 0
 
@@ -247,22 +250,25 @@ plt.show()
 ```
 
 On affiche ensuite un barplot (diagramme à bâtons) qui compare le Fuel_Type et le Transmission_rate.
-→ Les voitures Diesel sont plus souvent automatiques que les voitures essence.
+- Les voitures Diesel sont plus souvent automatiques que les voitures essence.
 
 On affiche aussi un barplot qui compare le Fuel_Type et le Seller_Type.
-→ Les voitures essence sont les moins vendus par les revendeurs.
+
+- Les voitures essence sont les moins vendus par les revendeurs.
 
 Et même chose pour la Transmission et le Seller_Type.
-→ Les voitures automatiques sont les plus vendus par les revendeurs.
 
-### Analyse multivariée
-#### Tableau croisé
+- Les voitures automatiques sont les plus vendus par les revendeurs.
+
+## Analyse multivariée
+
+### Tableau croisé
 ```python
 result = pd.pivot_table(data=df3, index='Fuel_Type', columns='Seller_Type', values='Transmission_rate')
 ```
 Tout d'abord, on fait un tableau croisé entre 2 variables catégorielles, avec une valeur numérique.
 
-#### Heatmap de corrélation
+### Heatmap de corrélation
 ```python
 sns.heatmap(result, annot=True, cmap='RdYlGn', center=0.117)
 plt.title('Heatmap of categorical data', fontsize=16, fontweight='bold')
@@ -270,13 +276,14 @@ plt.show()
 ```
 À partir de ça, on génère la heatmap (carte de chaleur). 
 Les options ajoutées : 
+
 - annot=True → nombre visible dans les cases
 - cmap='RdYlGn' → rouge/jaune/vert (faible → moyen → fort)
 - center=0.117 → point central de la palette (pour équilibrer les couleurs)
 
 Cette heatmap montre que les particuliers ont le plus souvent des voitures Diesel par exemple.
 
-#### Nuage de points en 3D
+### Nuage de points en 3D
 ```python
 fig = px.scatter_3d(
     data_frame=df3,
@@ -296,6 +303,7 @@ fig = px.scatter_3d(
 pio.show(fig)
 ```
 On génère ici un nuage de points (scatter plot) 3D interactif avec :
+
 - Axe X : Present_Price
 - Axe Y : Age
 - Axe Z : Selling_Price
@@ -306,7 +314,7 @@ On génère ici un nuage de points (scatter plot) 3D interactif avec :
 
 Cela permet d’observer en même temps comment le prix actuel et l’âge influencent le prix de vente, si les revendeurs se placent différemment des particuliers et si les voitures Diesel (hover) sont regroupées dans une région du graphique.
 
-#### Transformation des colonnes catégorielles en valeurs numériques
+### Transformation des colonnes catégorielles en valeurs numériques
 ```python
 df4 = df2.copy()
 df4['Transmission'] = np.where(df4.Transmission == 'Automatic', 2, 3)
@@ -316,7 +324,7 @@ df4
 ```
 On transforme les colonnes catégorielles en valeurs numériques (2, 3, 4) et non en 0/1 pour éviter que le modèle interprète "0" comme absence ou priorité.
 
-#### Tableau statistique complet
+### Tableau statistique complet
 ```python
 info_table = df4.describe().T
 info_table.insert(8, 'isna', df4.isna().sum())
@@ -325,7 +333,7 @@ info_table
 ```
 On crée un tableau statistique complet avec mean, min, max, std (écart-type / dispersion), isna (valeurs manquantes) et type.
 
-#### Heatmap des corrélations du dataset
+### Heatmap des corrélations du dataset
 ```python
 plt.figure(figsize=(8, 4))
 sns.heatmap(df4.corr(), annot=True, cmap='PRGn_r')
@@ -333,32 +341,35 @@ plt.title('Heatmap of df4 (encoded dataset)', fontsize=16, fontweight='bold')
 plt.show()
 ```
 On génére un heatmap et obtient les relations entre :
-- Present_Price ↔ Selling_Price
-- Fuel_Type ↔ Selling_Price
-- Seller_Type ↔ Selling_Price
-- Present_Price ↔ Seller_Type
 
-#### Nuage de points entre Selling_Price et les variables catégorielles encodées en chiffres
+- Present_Price et Selling_Price
+- Fuel_Type et Selling_Price
+- Seller_Type et Selling_Price
+- Present_Price et Seller_Type
+
+### Nuage de points entre Selling_Price et les variables catégorielles encodées en chiffres
 ```python
 %matplotlib inline
 for col in df4[['Fuel_Type','Seller_Type','Transmission']]:
     sns.scatterplot(data=df4, x=col, y='Selling_Price')
     plt.title(f'Selling_Price vs {col}', fontsize=16, fontweight='bold')
     plt.show()
-````
+```
 Ici, on trace un nuage de points (scatter plot) entre Selling_Price (variable cible → prix de vente) et chacune des variables catégorielles encodées en chiffres :
+
 - Fuel_Type
 - Seller_Type
 - Transmission
 Cela permet de détecter s’il existe une tendance ou un pattern visuel rapidement.
 Les graphiques semblent indiquer :
+
 - Les voitures Diesel (code 2) semblent être vendues plus chers.
 - Les revendeurs (code 2) semblent avoir des prix de vente supérieurs aux particuliers .
 - Les voitures automatique (code 2) semblent avoir des prix de vente supérieurs aux manuelles.
 
 Ces différentes colonnes pourraient donc être utiles au modèle.
 
-## 4. Modèle de régression linéaire
+# 4. Modèle de régression linéaire
 
 ```python
 df4
@@ -556,9 +567,9 @@ model1.show_weight()
 
 Ce code appelle la méthode `append_result()` pour stocker les résultats du modèle, puis appelle la méthode `plot_graph()` pour visualiser les performances du modèle à l'aide de graphiques, et enfin appelle la méthode `show_weight()` pour afficher les coefficients et l'interception du modèle de régression linéaire.
 
-## 5. Amélioration du modèle 
+# 5. Amélioration du modèle 
 
-### Transformation algorithmique  
+## Transformation algorithmique  
 
 ```python 
 norm1['log_Age'] = np.log10(norm1.Age)
@@ -583,7 +594,7 @@ model2 = CarPredModel(x,y,0.2) // Instancie un objet model2 de la classe CarPred
 model2.fit_model() //Appel à la méthode d’entraînement.
 model2.cross(5) // ppel à la validation croisée 
 
-### Ajout d’une variable d’interaction Present_Price × log_Age 
+## Ajout d'une variable d'interaction Present_Price * log_Age
 
 ```python
 norm1['p_price_log_age'] = norm1.Present_Price * norm1.log_Age 
@@ -601,14 +612,14 @@ une voiture chère, perd plus de valeur avec l’âge et une voiture bon marché
 Donc cette interaction capture la décote non linéaire liée au prix initial. 
 
 
-### Ajout d’une seconde interaction : Present_Price × Fuel_Type    
+## Ajout d'une seconde interaction : Present_Price * Fuel_Type    
 
-Le prix neuf d’un véhicule n’impacte pas la même manière selon le carburant :
+Le prix neuf d'un véhicule n'impacte pas la même manière selon le carburant :
 les diesels décotent plus vite dans certains contextes,les essences parfois moins,les CNG/other ont des comportements à part.
-Cette interaction permet donc de capturer un effet complexe prix × carburant. 
+Cette interaction permet donc de capturer un effet complexe prix * carburant. 
 
 
-### Test avec test_size = 0.3 (split 70/30) 
+## Test avec test_size = 0.3 (split 70/30) 
 On construit norm2 = norm.copy() puis on refait les mêmes étapes mais avec test_size = 0.3. 
 L'objectif est de vérifier la robustesse du modèle sur un autre split plus exigeant. 
 
@@ -617,63 +628,228 @@ Le model2 ajoute la transformations log (même logique que pour norm1), puis ent
 Le model3  ajoute l’interaction p_price_log_age.
 Le model4 ajoute la deuxième interaction, entraînement, CV.
 
-## 6. Visualisation du modèle final
+# 6. Visualisation du modèle final
 
-### Coefficients du modèle
+Le modèle final retenu est le **model4**, entraîné avec un `test_size = 0.3` (70% entraînement, 30% test), car il présente la meilleure performance globale.
 
-L'interprétation du modèle repose sur l'examen des coefficients ($w_i$), qui mesurent l'impact marginal de chaque variable sur le `Selling_Price`.
+## Visualisation des prédictions par variable
 
-Le code suivant a été utilisé pour afficher les poids finaux :
+Pour chaque variable explicative, trois graphiques sont générés afin de comparer visuellement les performances du modèle :
+
+```python
+columns = ['Present_Price','log_Age','log_Kms_Driven','Seller_Type','Fuel_Type','Transmission','Owner']
+for col in columns:
+    a = model4.x_train[col]
+    b = model4.y_train
+    c = model4.x_test[col]
+    d = model4.y_pred_test
+
+    fig , ax = plt.subplots(1,3, figsize=(15,4))
+    ax[0].scatter(a, b, label='real')
+    ax[0].set_title('Training Data', fontsize=14, fontweight='bold')
+    ax[0].set_xlabel(col)
+    ax[0].set_ylabel('Selling_Price')
+    
+    ax[1].scatter(c, d, label='predict', color='orange')
+    ax[1].set_title('Prediction', fontsize=14, fontweight='bold')
+    ax[1].set_xlabel(col)
+    ax[1].set_ylabel('Selling_Price')
+    
+    ax[2].scatter(a, b, label='real')
+    ax[2].scatter(c, d, label='predict', alpha=.6)
+    ax[2].set_title('Training Data vs Prediction', fontsize=14, fontweight='bold')
+    ax[2].set_xlabel(col)
+    ax[2].set_ylabel('Selling_Price')
+    
+    plt.show()
+```
+
+### Explication des trois graphiques :
+
+1. **Training Data** : Nuage de points des données réelles d'entraînement (variable explicative vs `Selling_Price`)
+2. **Prediction** : Nuage de points des prédictions du modèle sur les données de test
+3. **Training Data vs Prediction** : Superposition des deux pour comparer visuellement la qualité du modèle
+
+## Comparaison modèle vs données réelles
+
+Pour chaque variable, on trace également une courbe de régression comparant les prix réels (points noirs) aux prédictions du modèle (ligne rouge) :
+
+```python
+model4.x_test.insert(0, 'y_test', model4.y_test)
+model4.x_test.insert(0, 'y_pred', model4.y_pred_test)
+
+for col in columns:
+    new_df = model4.x_test.sort_values(by=[col])
+    plt.scatter(new_df[col], new_df.y_test, marker='.', color='black', label='real')
+    plt.plot(new_df[col], new_df.y_pred, color='r', alpha=0.6, label='model')
+    plt.title('Car Price Prediction Model', fontsize=14, fontweight='bold')
+    plt.xlabel(f'{col}')
+    plt.ylabel('Selling_Price')
+    plt.legend()
+    plt.show()
+```
+
+Cela permet de visualiser comment le modèle capture la tendance générale pour chaque variable.
+
+## Métriques de performance du modèle final
+
+```python
+print(f'Mean Absolut Error: {model4.mae_test_model}')
+print(f'Mean Squared Error: {model4.mse_test_model}')
+print(f'R2 Score: {model4.r2_test_model}')
+```
+
+Les métriques principales évaluées sont :
+
+- **MAE (Mean Absolute Error)** : Erreur absolue moyenne, indique la déviation moyenne des prédictions
+- **MSE (Mean Squared Error)** : Erreur quadratique moyenne, pénalise davantage les erreurs importantes
+- **R² Score** : Coefficient de détermination, mesure la proportion de variance expliquée par le modèle (plus proche de 1 = meilleur)
+
+### Évolution des scores R² au fil des modèles
+
+```python
+sns.lineplot(data=pd.DataFrame({'R2_Score_train': R2_train, 'R2_Score_test': R2_test}), markers=True)
+plt.title('R2-Score test vs R2-Score train', fontsize=14, fontweight='bold')
+plt.xlabel('Model')
+plt.ylabel('R2 Score')
+```
+
+Ce graphique permet de visualiser l'amélioration progressive des scores R² (train et test) à travers les différentes itérations du modèle (model1 → model2 → model3 → model4).
+
+**Conclusion** : Le modèle final (model4) présente le meilleur compromis entre performance d'entraînement et de test, avec des métriques optimales indiquant une bonne capacité de généralisation.
+
+# 7. Prédiction sur des données saisies par l'utilisateur
+
+Le modèle final permet de prédire le prix de vente d'une voiture en fonction de caractéristiques saisies par l'utilisateur.
+
+## Processus de prédiction
+
+### 1. Préparation des données
+
+Le modèle utilise l'ensemble complet des données existantes pour s'entraîner, puis ajoute une nouvelle observation saisie par l'utilisateur :
+
+```python
+x = df4.drop('Selling_Price', axis=1)
+y = df4.Selling_Price.values.reshape(-1,1)
+
+cols_name = ['Present_Price','Age','Kms_Driven','Seller_Type','Fuel_Type','Transmission','Owner']
+```
+
+### 2. Saisie interactive des caractéristiques
+
+L'utilisateur doit fournir les valeurs suivantes :
+
+```python
+print("Please enter the value of each feature: ")
+print("(in Seller_Type: 2=Dealer , 3=Individual")
+print(" in Fuel_Type: 2=Diesel , 3=Petrol , 4=CNG")
+print(" in Transmission: 2=Automatic , 3=Manual)")
+print("-"*40)
+
+sample = pd.DataFrame()
+for col in cols_name:
+    sample[col] = [float(input(f"{col}: "))]
+```
+
+**Encodage des variables catégorielles :**
+
+- **Seller_Type** : `2` = Dealer (revendeur), `3` = Individual (particulier)
+- **Fuel_Type** : `2` = Diesel, `3` = Petrol (essence), `4` = CNG (gaz naturel)
+- **Transmission** : `2` = Automatic (automatique), `3` = Manual (manuelle)
+
+### 3. Feature engineering sur la nouvelle observation
+
+Les mêmes transformations appliquées lors de l'entraînement sont appliquées à la nouvelle observation :
+
+```python
+x = pd.concat([x, sample])
+x['log_Age'] = np.log10(x['Age'])
+x['log_Kms_Driven'] = np.log10(x['Kms_Driven'])
+x['p_price_log_age'] = x['Present_Price'] * x['log_Age']
+x['p_price_fuel'] = x['Present_Price'] * x['Fuel_Type']
+x = x.drop(['Age', 'Kms_Driven'], axis=1)
+```
+
+**Transformations appliquées :**
+
+- **Transformation logarithmique** : `log_Age` et `log_Kms_Driven` pour réduire l'asymétrie et l'impact des valeurs extrêmes
+- **Variable d'interaction 1** : `p_price_log_age = Present_Price * log_Age` pour capturer la décote non linéaire liée au prix initial et à l'âge
+- **Variable d'interaction 2** : `p_price_fuel = Present_Price * Fuel_Type` pour modéliser l'effet combiné du prix neuf et du type de carburant sur la décote
+- **Suppression des variables brutes** : `Age` et `Kms_Driven` sont retirées car remplacées par leurs versions logarithmiques
+
+### 4. Entraînement du modèle final et prédiction
+
+```python
+x_train = x[:len(x)-1]
+x_test = x[len(x)-1:]
+y_train = y
+
+final_model = LinearRegression()
+final_model.fit(x_train, y_train)
+```
+
+Le modèle est entraîné sur toutes les données historiques (`x_train`), puis utilisé pour prédire le prix de la nouvelle observation (`x_test`).
+
+### 5. Affichage des coefficients du modèle
 
 ```python
 print("Table of coef and intercept of model:\n")
 final_params = ['b']+ ['w_' + str(i) for i in range(1,x.shape[1]+1)]
 param_name = ['intercept'] + x.columns.to_list()
 final_weight_table = pd.DataFrame({'final_params': final_params, 'Columns': param_name})
-sk_weight = [final_model.intercept_] + final_model.coef_.tolist()
-final_weight_table = final_weight_table.join(pd.Series(sk_weight, name='Sk weight'))
+sk_weight = [i for i in final_model.intercept_] + final_model.coef_.tolist()[0]
+final_weight_table = final_weight_table.join(pd.Series(sk_weight, name='Sk_weight'))
 print(final_weight_table, '\n')
 ```
 
-| `final_params` | `Columns` (Variable) | `Sk weight` (Coefficient) |
-| :---: | :--- | :---: |
-| **b** | intercept | $\approx 2.454$ |
-| w\_1 | `Present_Price` | $\approx 0.442$ |
-| w\_5 | `Fuel_Type_Diesel` | $\approx 2.503$ |
-| w\_8 | `Transmission_Manual` | $\approx -1.334$ |
-| w\_4 | `Age` | $\approx -0.420$ |
+Cette table affiche :
 
-  * **Conclusion :** Le **`Present_Price`** est le prédicteur le plus fort. Le **`Fuel_Type_Diesel`** ajoute une valeur significative, tandis que l'**`Age`** et la **`Transmission_Manual`** sont associés à une dévaluation.
+- **b (intercept)** : La constante du modèle
+- **w_1, w_2, ...** : Les coefficients de chaque variable, indiquant leur impact sur le prix de vente
 
-### Performance graphique
+**Interprétation des coefficients :**
 
-La performance est illustrée en comparant les prix prédits aux prix réels sur l'ensemble de test.
+- Un coefficient **positif** signifie que l'augmentation de cette variable fait **augmenter** le prix de vente
+- Un coefficient **négatif** signifie que l'augmentation de cette variable fait **diminuer** le prix de vente
+- La **magnitude** du coefficient indique l'importance de la variable dans la prédiction
 
-## 7. Prédictions de données simples
-
-Le modèle final est utilisé pour prédire le prix de vente d'une observation spécifique issue de l'ensemble de test.
-
-### Résultat de la prédiction
+### 6. Résultat de la prédiction
 
 ```python
 y_pred = final_model.predict(x_test)
 print('='*25)
-print(f"  Selling Price (Actual): {y[len(y)-1]}")
-print(f"  Selling Price (Predict): {y_pred[0]}")
+print(f"  Selling Price: {round(y_pred[0][0], 4)}")
 print('='*25)
 ```
 
-**Valeurs obtenues :**
+Le modèle affiche le **prix de vente prédit** (en Lakhs roupies indiennes) pour la voiture dont les caractéristiques ont été saisies.
 
-```text
+## Exemple d'utilisation
+
+**Entrées utilisateur :**
+
+- Present_Price: 5.59
+- Age: 8
+- Kms_Driven: 50000
+- Seller_Type: 2 (Dealer)
+- Fuel_Type: 2 (Diesel)
+- Transmission: 3 (Manual)
+- Owner: 0
+
+**Sortie du modèle :**
+
+```
 =========================
-  Selling Price (Actual): 12.5
-  Selling Price (Predict): 10.4566
+  Selling Price: 3.7856
 =========================
 ```
 
-  * Le modèle a sous-estimé le prix réel (**12.5 Lakhs**) à **10.46 Lakhs**, illustrant la marge d'erreur du modèle sur un cas isolé.
+Le modèle prédit que cette voiture devrait être vendue environ **3.79 Lakhs roupies**.
 
-### Application
+## Application pratique
 
-Le modèle peut être appliqué à de nouvelles données pour estimer leur prix après application des étapes de pré-traitement nécessaires (encodage et mise à l'échelle).
+Ce système de prédiction peut être utilisé par :
+
+- **Les vendeurs** : Pour estimer un prix de vente réaliste basé sur les caractéristiques de leur véhicule
+- **Les acheteurs** : Pour évaluer si un prix proposé est cohérent avec le marché
+- **Les plateformes de vente** : Pour automatiser l'évaluation des véhicules d'occasion
